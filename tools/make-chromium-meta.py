@@ -30,5 +30,9 @@ if match:
     manifest_out['browser_action']['default_title'] += ' dev build'
 
 with open(manifest_out_file, 'w') as f:
-    json.dump(manifest_out, f, indent=2, separators=(',', ': '), sort_keys=True)
+    json.dump(manifest_out,
+              f,
+              indent=2,
+              separators=(',', ': '),
+              sort_keys=True)
     f.write('\n')

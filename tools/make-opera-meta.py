@@ -22,5 +22,9 @@ with open(manifest_out_file) as f:
 manifest_out['version'] = version
 
 with open(manifest_out_file, 'w') as f2:
-    json.dump(manifest_out, f2, indent=2, separators=(',', ': '), sort_keys=True)
+    json.dump(manifest_out,
+              f2,
+              indent=2,
+              separators=(',', ': '),
+              sort_keys=True)
     f2.write('\n')

@@ -32,5 +32,9 @@ if 'sidebar_action' in firefox_manifest:
 firefox_manifest['version'] = version
 
 with open(firefox_manifest_file, 'w') as f2:
-    json.dump(firefox_manifest, f2, indent=2, separators=(',', ': '), sort_keys=True)
+    json.dump(firefox_manifest,
+              f2,
+              indent=2,
+              separators=(',', ': '),
+              sort_keys=True)
     f2.write('\n')

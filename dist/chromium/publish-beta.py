@@ -52,6 +52,7 @@ if os.path.isfile(ubo_secrets_filename):
     with open(ubo_secrets_filename) as f:
         ubo_secrets = json.load(f)
 
+
 def input_secret(prompt, token):
     if token in ubo_secrets:
         prompt += ' ✔'
@@ -82,8 +83,11 @@ github_auth = 'token ' + github_token
 
 # https://developer.github.com/v3/repos/releases/#get-a-single-release
 print('Downloading release info from GitHub...')
-release_info_url = 'https://api.github.com/repos/{0}/{1}/releases/tags/{2}'.format(github_owner, github_repo, version)
-headers = { 'Authorization': github_auth, }
+release_info_url = 'https://api.github.com/repos/{0}/{1}/releases/tags/{2}'.format(
+    github_owner, github_repo, version)
+headers = {
+    'Authorization': github_auth,
+}
 response = requests.get(release_info_url, headers=headers)
 if response.status_code != 200:
     print('Error: Release not found: {0}'.format(response.status_code))
@@ -117,7 +121,8 @@ response = requests.get(raw_zip_url, headers=headers)
 # Redirections are transparently handled:
 # http://docs.python-requests.org/en/master/user/quickstart/#redirection-and-history
 if response.status_code != 200:
-    print('Error: Downloading raw package failed -- server error {0}'.format(response.status_code))
+    print('Error: Downloading raw package failed -- server error {0}'.format(
+        response.status_code))
     exit(1)
 with open(raw_zip_filepath, 'wb') as f:
     f.write(response.content)
@@ -144,7 +149,8 @@ with open(raw_zip_filepath, 'rb') as f:
     }
     auth_response = requests.post(auth_url, data=auth_payload)
     if auth_response.status_code != 200:
-        print('Error: Auth failed -- server error {0}'.format(auth_response.status_code))
+        print('Error: Auth failed -- server error {0}'.format(
+            auth_response.status_code))
         print(auth_response.text)
         exit(1)
     response_dict = auth_response.json()
@@ -159,21 +165,26 @@ with open(raw_zip_filepath, 'rb') as f:
     }
     # Upload
     print('Uploading package...')
-    upload_url = 'https://www.googleapis.com/upload/chromewebstore/v1.1/items/{0}'.format(cs_extension_id)
+    upload_url = 'https://www.googleapis.com/upload/chromewebstore/v1.1/items/{0}'.format(
+        cs_extension_id)
     upload_response = requests.put(upload_url, headers=headers, data=f)
     f.close()
     if upload_response.status_code != 200:
-        print('Upload failed -- server error {0}'.format(upload_response.status_code))
+        print('Upload failed -- server error {0}'.format(
+            upload_response.status_code))
         print(upload_response.text)
         exit(1)
-    response_dict = upload_response.json();
-    if 'uploadState' not in response_dict or response_dict['uploadState'] != 'SUCCESS':
-        print('Upload failed -- server error {0}'.format(response_dict['uploadState']))
+    response_dict = upload_response.json()
+    if 'uploadState' not in response_dict or response_dict[
+            'uploadState'] != 'SUCCESS':
+        print('Upload failed -- server error {0}'.format(
+            response_dict['uploadState']))
         exit(1)
     print('Upload succeeded.')
     # Publish
     print('Publishing package...')
-    publish_url = 'https://www.googleapis.com/chromewebstore/v1.1/items/{0}/publish'.format(cs_extension_id)
+    publish_url = 'https://www.googleapis.com/chromewebstore/v1.1/items/{0}/publish'.format(
+        cs_extension_id)
     headers = {
         'Authorization': cs_auth,
         'x-goog-api-version': '2',
@@ -181,11 +192,14 @@ with open(raw_zip_filepath, 'rb') as f:
     }
     publish_response = requests.post(publish_url, headers=headers)
     if publish_response.status_code != 200:
-        print('Error: Chrome store publishing failed -- server error {0}'.format(publish_response.status_code))
+        print(
+            'Error: Chrome store publishing failed -- server error {0}'.format(
+                publish_response.status_code))
         exit(1)
-    response_dict = publish_response.json();
+    response_dict = publish_response.json()
     if 'status' not in response_dict or response_dict['status'][0] != 'OK':
-        print('Publishing failed -- server error {0}'.format(response_dict['status']))
+        print('Publishing failed -- server error {0}'.format(
+            response_dict['status']))
         exit(1)
     print('Publishing succeeded.')
 
